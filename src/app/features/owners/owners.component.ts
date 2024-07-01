@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { PoBreadcrumb, PoPageAction, PoTableColumn } from '@po-ui/ng-components';
+import { PoBreadcrumb, PoPageAction, PoTableColumn, PoNotificationService } from '@po-ui/ng-components';
 import { Owners } from './shared/interfaces/owners.model';
+import { OwnersService } from './shared/services/owners.service';
 
 @Component({
   selector: 'app-owners',
@@ -27,7 +28,10 @@ export class OwnersComponent {
     remainingRecords: 0
   }
 
-  constructor(){
+  constructor(
+    private ownersService: OwnersService,
+    private poNotificationService: PoNotificationService
+  ){
     this.setColumns();
     this.getOwners();
   }
@@ -54,8 +58,9 @@ export class OwnersComponent {
 
 
   getOwners(): void{
-    this.owners.items = [
-      { id: '00001', name: 'Teste', rg: 'teste', cpf: 'teste', email: 'teste', tel1: 'teste', tel2: 'teste'}
-    ]
+    this.ownersService.get().subscribe({
+      next: (owners: Owners) => this.owners.items = owners.items,
+      error: (error: any) => this.poNotificationService.error('Falha ao retornar tutores.')
+    })
   }
 }
