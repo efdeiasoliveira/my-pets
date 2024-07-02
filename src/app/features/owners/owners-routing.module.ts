@@ -2,9 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { OwnersComponent } from './owners.component';
+import { OwnersFormComponent } from './owners-form/owners-form.component';
 
 const routes: Routes = [
-  { path: '', component: OwnersComponent}
+  { path: '', component: OwnersComponent},
+  { path: 'new', component: OwnersFormComponent}
 ]
 
 @NgModule({

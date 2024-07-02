@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { PoBreadcrumb, PoPageAction, PoTableColumn, PoNotificationService } from '@po-ui/ng-components';
 import { Owners } from './shared/interfaces/owners.model';
 import { OwnersService } from './shared/services/owners.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-owners',
@@ -11,7 +12,7 @@ import { OwnersService } from './shared/services/owners.service';
 export class OwnersComponent {
 
   actions: Array<PoPageAction> = [
-    { label: 'Novo' }
+    { label: 'Novo', action: this.goToFormOwner.bind(this) }
   ]
 
   breadcrumb: PoBreadcrumb = {
@@ -36,13 +37,18 @@ export class OwnersComponent {
 
   constructor(
     private ownersService: OwnersService,
-    private poNotificationService: PoNotificationService
+    private poNotificationService: PoNotificationService,
+    private router: Router
   ){
     this.setColumns();
     this.getOwners(1,10);
   }
 
   ngOninit(): void {
+  }
+
+  goToFormOwner(): void {
+    this.router.navigate(['owners/new'])
   }
 
   setColumns(): void {
