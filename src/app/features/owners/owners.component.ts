@@ -28,16 +28,21 @@ export class OwnersComponent {
     remainingRecords: 0
   }
 
+  isLoading: boolean = false;
+  hasNextPage: boolean = false;
+  page: number = 1;
+  textRemainingRecords: string = '';
+  totalOwners: number = 0;
+
   constructor(
     private ownersService: OwnersService,
     private poNotificationService: PoNotificationService
   ){
     this.setColumns();
-    this.getOwners();
+    this.getOwners(1,10);
   }
 
   ngOninit(): void {
-
   }
 
   setColumns(): void {
@@ -57,10 +62,29 @@ export class OwnersComponent {
   }
 
 
-  getOwners(): void{
-    this.ownersService.get().subscribe({
-      next: (owners: Owners) => this.owners.items = owners.items,
-      error: (error: any) => this.poNotificationService.error('Falha ao retornar tutores.')
+  getOwners(page:number, pageSize:number): void{
+    this.isLoading = true;
+    this.ownersService.get(page,pageSize).subscribe({
+      next: (owners: Owners) => this.onGetSuccess(owners),
+      error: (error: any) => { this.poNotificationService.error('Falha ao retornar tutores.'); this.isLoading = false }
     })
+  }
+
+  onGetSuccess(owners:Owners): void {
+    if (this.owners.items.length === 0){
+      this.owners.items = owners.items;
+    } else {
+      this.owners.items = this.owners.items.concat(owners.items);
+    }
+
+    this.isLoading = false;
+    this.hasNextPage = owners.hasNext;
+    this.totalOwners = this.owners.items.length;
+    this.textRemainingRecords = `Mostrando ${this.totalOwners} de ${this.totalOwners+owners.remainingRecords}`
+  }
+
+  showMoreItems(): void{
+    this.page += 1;
+    this.getOwners(this.page,10);
   }
 }
