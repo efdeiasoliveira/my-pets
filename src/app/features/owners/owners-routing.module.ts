@@ -6,7 +6,8 @@ import { OwnersFormComponent } from './owners-form/owners-form.component';
 
 const routes: Routes = [
   { path: '', component: OwnersComponent},
-  { path: 'new', component: OwnersFormComponent}
+  { path: 'new', component: OwnersFormComponent},
+  { path: 'edit/:id', component: OwnersFormComponent}
 ]
 
 @NgModule({

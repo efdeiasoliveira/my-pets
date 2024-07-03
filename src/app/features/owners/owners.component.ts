@@ -53,7 +53,7 @@ export class OwnersComponent {
 
   setColumns(): void {
     this.columns = [
-      { property: 'id', label: 'Código' },
+      { property: 'id', label: 'Código', type: 'link', action: (row: string) => this.goToFormEdit(row) },
       { property: 'name', label: 'Nome' },
       { property: 'rg', label: 'RG', visible: false },
       { property: 'cpf', label: 'CPF' },
@@ -65,6 +65,10 @@ export class OwnersComponent {
         { value: 'include-pet', icon: 'po-icon-plus-circle', tooltip: 'Incluir Pets'}
       ] }
     ]
+  }
+
+  goToFormEdit(id:string):void{
+    this.router.navigate(['owners/edit', id])
   }
 
 

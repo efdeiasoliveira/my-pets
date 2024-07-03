@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Owners } from '../interfaces/owners.model';
+import { Owner } from '../interfaces/owner.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,5 +24,17 @@ export class OwnersService {
 
 
     return this.httpClient.get<Owners>(environment.ownersAPI, { params: parameters });
+  }
+
+  getById(id:string):Observable<Owner>{
+    return this.httpClient.get<Owner>(environment.ownersAPI + '/' + id) ;
+  }
+
+  post(body:Owner): Observable<Owner>{
+    return this.httpClient.post<Owner>(environment.ownersAPI, body)
+  }
+
+  put(id:string, body:Owner): Observable<Owner>{
+    return this.httpClient.put<Owner>(environment.ownersAPI + '/' + id, body)
   }
 }
