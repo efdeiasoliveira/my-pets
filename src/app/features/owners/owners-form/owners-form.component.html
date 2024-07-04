@@ -5,7 +5,7 @@
   [p-literals]="customLiterals"
   (p-cancel)="cancel()"
   (p-save)="save(false)"
-  (p-save-new)="save(true)"
+  (p-save-new)="saveOrDelete()"
 >
   <po-loading-overlay [hidden]="!isLoading"></po-loading-overlay>
   <form [formGroup]="ownersForm" *ngIf="ownersForm">

@@ -2,7 +2,7 @@ import { Owner } from './../shared/interfaces/owner.model';
 import { OwnersService } from './../shared/services/owners.service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { PoBreadcrumb, PoNotificationService, PoPageEditLiterals } from '@po-ui/ng-components';
+import { PoBreadcrumb, PoNotificationService, PoPageEditLiterals, PoDialogService } from '@po-ui/ng-components';
 import { OwnerForm } from '../shared/interfaces/owner-form.model';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -36,7 +36,8 @@ export class OwnersFormComponent implements OnInit {
   constructor(private router: Router,
               private ownersService: OwnersService,
               private poNotificationService: PoNotificationService,
-              private activatedRoute: ActivatedRoute
+              private activatedRoute: ActivatedRoute,
+              private poDialogService: PoDialogService
             ){
     this.operation = 'post';
     this.title = 'Novo Registro'
@@ -100,7 +101,7 @@ export class OwnersFormComponent implements OnInit {
         error: error => this.onSaveError(error)
       })
     } else if (this.operation === 'put'){
-      this.ownersSubscription = this.ownersService.put(this.activatedRoute.snapshot.params['id'],this.ownersForm.value).subscribe({
+      this.ownersSubscription = this.ownersService.put(this.ownersForm.value).subscribe({
         next: response => this.onSaveSuccess(response, isSaveAndNew),
         error: error => this.onSaveError(error)
       })
@@ -145,5 +146,43 @@ export class OwnersFormComponent implements OnInit {
   onGetError(error:any): void{
     this.isLoading = false;
     this.poNotificationService.error('Falha ao retornar o registro')
+  }
+
+  saveOrDelete(): void{
+    if ( this.operation === 'post') {
+      this.save(true)
+    } else {
+      this.confirmDelete()
+    }
+  }
+
+  confirmDelete(): void {
+    this.poDialogService.confirm({
+      title: 'Excluir tutor',
+      message: "Tem certeza que deseja excluir?",
+      confirm: this.delete.bind(this)
+    })
+  }
+
+  delete(): void {
+    this.isLoading = true;
+    this.isDisableButton = true;
+    this.ownersService.delete(this.activatedRoute.snapshot.params['id']).subscribe({
+      next: (response: any) => this.onDeleteSuccess(),
+      error: () => this.onDeleteError()
+    })
+  }
+
+  onDeleteSuccess(): void {
+    this.isLoading = false;
+    this.isDisableButton = false;
+    this.router.navigate([ 'owners'])
+    this.poNotificationService.success('Registro excluído com sucesso...')
+  }
+
+  onDeleteError(): void{
+    this.isLoading = false;
+    this.isDisableButton = false;
+    this.poNotificationService.error('Falha ao excluir o registro')
   }
 }

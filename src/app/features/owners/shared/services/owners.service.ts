@@ -34,7 +34,12 @@ export class OwnersService {
     return this.httpClient.post<Owner>(environment.ownersAPI, body)
   }
 
-  put(id:string, body:Owner): Observable<Owner>{
-    return this.httpClient.put<Owner>(environment.ownersAPI + '/' + id, body)
+  put(body:Owner): Observable<Owner>{
+    return this.httpClient.put<Owner>(environment.ownersAPI + '/' + body.id, body)
   }
+
+  delete(id:string):Observable<any>{
+    return this.httpClient.delete<any>(environment.ownersAPI + '/' + id) ;
+  }
+
 }
