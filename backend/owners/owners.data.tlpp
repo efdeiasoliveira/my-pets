@@ -33,13 +33,13 @@ EndClass
     @param lList, logical, determina se retornará uma lista ou um registro
     @return Self, object, estancia da classe
     /*/
-Method new( cVerb as Character, lList as Logical ) as Object Class OwnersData
+Method new(cVerb as Character, lList as Logical) as Object Class OwnersData
 
     Default lList := .T.
 
     ::jResponse := JsonObject():new()
 
-    _Super:new( cVerb, lList )
+    _Super:new(cVerb, lList)
 
 Return Self
 
@@ -56,47 +56,47 @@ Return Self
     @param cSort, character, Ordenação dos campos
     @param cId, character, ID do registro especifico
     /*/
-Method get( nPage as Numeric, nPageSize as Numeric, aFilter as Array, cFields as Character, cSort as Character, cId as Character ) Class OwnersData
-    
+Method get(nPage as Numeric, nPageSize as Numeric, aFilter as Array, cFields as Character, cSort as Character, cId as Character) Class OwnersData
+
     Local aArea   as Array
     Local cWhere  as Character
 
     aArea   := fwGetArea()
 
-    cWhere := " ZSB_FILIAL = '" + fwXFilial( "ZSB" ) + "'"
+    cWhere := " ZSB_FILIAL = '" + fwXFilial("ZSB") + "'"
 
-    If ( ! empty( cId ))
+    If (! empty(cId))
         cWhere += " AND ZSB_ID = '" + cId + "'"
     EndIf
 
     cWhere += " AND D_E_L_E_T_ = ''"
 
-    addMapFields( self )
+    addMapFields(self)
 
-    If ( ! Empty( aFilter ))
-        ::setUrlFilter( aFilter )
+    If (! Empty(aFilter))
+        ::setUrlFilter(aFilter)
     EndIf
 
-    If ( ! Empty( cFields ))
-        ::setFields( cFields )
+    If (! Empty(cFields))
+        ::setFields(cFields)
     EndIf
 
-    If ( ! Empty( cSort ))
-        ::setOrderQuery( cSort )
+    If (! Empty(cSort))
+        ::setOrderQuery(cSort)
     EndIf
 
-    ::setPage( nPage )
-    ::setPageSize( nPageSize )
-    ::setQuery( getQuery())
-    ::setWhere( cWhere )
-    ::setOrder( "ZSB_ID" )
+    ::setPage(nPage)
+    ::setPageSize(nPageSize)
+    ::setQuery(getQuery())
+    ::setWhere(cWhere)
+    ::setOrder("ZSB_ID")
 
-    If ( ::execute())
+    If (::execute())
         ::fillGetResponse()
     EndIf
 
-    fwRestArea( aArea )
-    fwFreeArray( aArea )
+    fwRestArea(aArea)
+    fwFreeArray(aArea)
 
 Return Nil
 
@@ -112,8 +112,8 @@ Return Nil
     @param cId, character, ID do registro
     @return lReturn, logical, Processo OK
     /*/
-Method handleOwners( nOperation as Numeric, jBody as Json, cId as Character ) as Json Class OwnersData
-    
+Method handleOwners(nOperation as Numeric, jBody as Json, cId as Character) as Json Class OwnersData
+
     Local aData     as Array
     Local lReturn   as Logical
     Local oModel    as Object
@@ -122,54 +122,54 @@ Method handleOwners( nOperation as Numeric, jBody as Json, cId as Character ) as
     lReturn := .T.
     ::setHashFields()
 
-    If ( nOperation <> 5 )
-        aData := utils.rest.u_buildData( jBody, self )
+    If (nOperation <> 5)
+        aData := utils.rest.u_buildData(jBody, self)
     EndIf
 
-    If ( nOperation <> 3 )
-        DbSelectArea( "ZSB" )
-        DbSetOrder( 1 )
-        If ( ! MsSeek( fwXFilial( "ZSB" ) + cId ))
+    If (nOperation <> 3)
+        DbSelectArea("ZSB")
+        DbSetOrder(1)
+        If (! MsSeek(fwXFilial("ZSB") + cId))
             lReturn := .F.
-            ::jResponse := utils.rest.u_setError( 400, "Registro não encontrado: " + cId )
+            ::jResponse := utils.rest.u_setError(400, "Registro não encontrado: " + cId)
         EndIf
     EndIf
 
-    If ( lReturn )
-        oModel := fwLoadModel( "MPETS002" )
-        oModelZSB := oModel:getModel( "ZSBMASTER" )
+    If (lReturn)
+        oModel := fwLoadModel("MPETS002")
+        oModelZSB := oModel:getModel("ZSBMASTER")
 
-        oModel:setOperation( nOperation )
+        oModel:setOperation(nOperation)
 
         oModel:Activate()
-        If ( oModel:isActive())
-            If ( oModel:getOperation() <> MODEL_OPERATION_DELETE )
-                lReturn := utils.rest.u_setValue( aData, oModelZSB, "ZSB_ID" )
+        If (oModel:isActive())
+            If (oModel:getOperation() <> MODEL_OPERATION_DELETE)
+                lReturn := utils.rest.u_setValue(aData, oModelZSB, "ZSB_ID")
             EndIf
         Else
             lReturn := .F.
         EndIf
 
-        If ( lReturn )
+        If (lReturn)
             lReturn := oModel:vldData()
         EndIf
 
-        If ( lReturn )
+        If (lReturn)
             lReturn := oModel:commitData()
         EndIf
 
-        If ( lReturn )
+        If (lReturn)
             ::setResponse()
         Else
-            ::jResponse := utils.rest.u_setError( 400, utils.rest.u_getErrorMessage( oModel ))
+            ::jResponse := utils.rest.u_setError(400, utils.rest.u_getErrorMessage(oModel))
         EndIf
 
         oModel:deActivate()
     EndIf
 
-    fwFreeObj( oModelZSB )
-    fwFreeObj( oModel )
-    fwFreeArray( aData )
+    fwFreeObj(oModelZSB)
+    fwFreeObj(oModel)
+    fwFreeArray(aData)
 
 Return ::jResponse
 
@@ -181,16 +181,16 @@ Return ::jResponse
     @version 1.0
     /*/
 Method setHashFields() Class OwnersData
-    
+
     ::oHashFields := THashMap():new()
 
-    ::oHashFields:set( "id"   , "ZSB_ID"    )    
-    ::oHashFields:set( "name" , "ZSB_NAME"  )
-    ::oHashFields:set( "rg"   , "ZSB_RG"    )
-    ::oHashFields:set( "cpf"  , "ZSB_CPF"   )
-    ::oHashFields:set( "email", "ZSB_EMAIL" )
-    ::oHashFields:set( "tel1" , "ZSB_TEL1"  )
-    ::oHashFields:set( "tel2" , "ZSB_TEL2"  )
+    ::oHashFields:set("id"   , "ZSB_ID"   )
+    ::oHashFields:set("name" , "ZSB_NAME" )
+    ::oHashFields:set("rg"   , "ZSB_RG"   )
+    ::oHashFields:set("cpf"  , "ZSB_CPF"  )
+    ::oHashFields:set("email", "ZSB_EMAIL")
+    ::oHashFields:set("tel1" , "ZSB_TEL1" )
+    ::oHashFields:set("tel2" , "ZSB_TEL2" )
 
 Return Nil
 
@@ -205,13 +205,13 @@ Return Nil
 /*/
 Method setResponse() Class OwnersData
 
-    ::jResponse["id"   ] := rTrim( ZSB->ZSB_ID )        
-    ::jResponse["name" ] := fwHttpEncode( rTrim( ZSB->ZSB_NAME ))
-    ::jResponse["rg"   ] := rTrim( ZSB->ZSB_RG )
-    ::jResponse["cpf"  ] := rTrim( ZSB->ZSB_CPF )
-    ::jResponse["email"] := fwHttpEncode( rTrim( ZSB->ZSB_EMAIL ))
-    ::jResponse["tel1" ] := rTrim( ZSB->ZSB_TEL1 )
-    ::jResponse["tel2" ] := rTrim( ZSB->ZSB_TEL2 )  
+    ::jResponse["id"   ] := rTrim(ZSB->ZSB_ID)
+    ::jResponse["name" ] := fwHttpEncode(rTrim(ZSB->ZSB_NAME))
+    ::jResponse["rg"   ] := rTrim(ZSB->ZSB_RG)
+    ::jResponse["cpf"  ] := rTrim(ZSB->ZSB_CPF)
+    ::jResponse["email"] := fwHttpEncode(rTrim(ZSB->ZSB_EMAIL))
+    ::jResponse["tel1" ] := rTrim(ZSB->ZSB_TEL1)
+    ::jResponse["tel2" ] := rTrim(ZSB->ZSB_TEL2)
 
 Return Nil
 
@@ -224,15 +224,15 @@ Return Nil
     @version 1.0
     @param oSelf, object, instancia da classe
 /*/
-Static Function addMapFields( oSelf as Object )
-    
-    oSelf:addMapFields( "id"   , "ZSB_ID"   , .T., .T., { "ZSB_ID"   , "C", tamSX3("ZSB_ID" )[1]  , 0 })
-    oSelf:addMapFields( "name" , "ZSB_NAME" , .T., .F., { "ZSB_NAME" , 'C', tamSX3('ZSB_NAME')[1] , 0 })
-    oSelf:addMapFields( "rg"   , "ZSB_RG"   , .T., .F., { "ZSB_RG"   , 'C', tamSX3('ZSB_RG')[1]   , 0 })
-    oSelf:addMapFields( "cpf"  , "ZSB_CPF"  , .T., .F., { "ZSB_CPF"  , 'C', tamSX3('ZSB_CPF')[1]  , 0 })
-    oSelf:addMapFields( "email", "ZSB_EMAIL", .T., .F., { "ZSB_EMAIL", 'C', tamSX3('ZSB_EMAIL')[1], 0 })
-    oSelf:addMapFields( "tel1" , "ZSB_TEL1" , .T., .F., { "ZSB_TEL1" , 'C', tamSX3('ZSB_TEL1')[1] , 0 })
-    oSelf:addMapFields( "tel2" , "ZSB_TEL2" , .T., .F., { "ZSB_TEL2" , 'C', tamSX3('ZSB_TEL2')[1] , 0 })
+Static Function addMapFields(oSelf as Object)
+
+    oSelf:addMapFields("id"   , "ZSB_ID"   , .T., .T., { "ZSB_ID"   , "C", tamSX3("ZSB_ID")[1]  , 0 })
+    oSelf:addMapFields("name" , "ZSB_NAME" , .T., .F., { "ZSB_NAME" , 'C', tamSX3('ZSB_NAME')[1] , 0 })
+    oSelf:addMapFields("rg"   , "ZSB_RG"   , .T., .F., { "ZSB_RG"   , 'C', tamSX3('ZSB_RG')[1]   , 0 })
+    oSelf:addMapFields("cpf"  , "ZSB_CPF"  , .T., .F., { "ZSB_CPF"  , 'C', tamSX3('ZSB_CPF')[1]  , 0 })
+    oSelf:addMapFields("email", "ZSB_EMAIL", .T., .F., { "ZSB_EMAIL", 'C', tamSX3('ZSB_EMAIL')[1], 0 })
+    oSelf:addMapFields("tel1" , "ZSB_TEL1" , .T., .F., { "ZSB_TEL1" , 'C', tamSX3('ZSB_TEL1')[1] , 0 })
+    oSelf:addMapFields("tel2" , "ZSB_TEL2" , .T., .F., { "ZSB_TEL2" , 'C', tamSX3('ZSB_TEL2')[1] , 0 })
 
 Return Nil
 
@@ -248,11 +248,11 @@ Return Nil
     @return cQuery, character, Query
 /*/
 Static Function getQuery()
-    
+
     Local cQuery as Character
 
     cQuery := " SELECT #QueryFields#"
-    cQuery += " FROM " + RetSqlTab( "ZSB" )
+    cQuery += " FROM " + RetSqlTab("ZSB")
     cQuery += " WHERE #QueryWhere#"
 
 Return cQuery

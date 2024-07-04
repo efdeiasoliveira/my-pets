@@ -15,7 +15,7 @@ Class OwnersService
     Public Method new() as Object
     Public Method get() as Json
     Public Method handle() as Json
-    
+
 EndClass
 
 
@@ -26,7 +26,7 @@ EndClass
     @version 1.0
     /*/
 Method new() as Object Class OwnersService
-    
+
     ::jResponse := JsonObject():new()
 
 Return Self
@@ -46,8 +46,8 @@ Return Self
     @param cID, character, ID do registro especifico
     @return ::jResponse, json, Json de resposta
     /*/
-Method get( nPage as Numeric, nPageSize as Numeric, aFilter as Array, cFields as Character, cSort as Character, cID as Character ) as Json Class OwnersService
-    
+Method get(nPage as Numeric, nPageSize as Numeric, aFilter as Array, cFields as Character, cSort as Character, cID as Character) as Json Class OwnersService
+
     Local oData as Object
 
     Default nPage     := 1
@@ -57,16 +57,16 @@ Method get( nPage as Numeric, nPageSize as Numeric, aFilter as Array, cFields as
     Default cSort     := ""
     Default cID       := ""
 
-    oData := OwnersData():new( "GET", empty( cID ))
-    oData:get( nPage, nPageSize, aFilter, cFields, cSort, cID )
+    oData := OwnersData():new("GET", empty(cID))
+    oData:get(nPage, nPageSize, aFilter, cFields, cSort, cID)
 
-    If ( oData:lOk )
+    If (oData:lOk)
         ::jResponse := oData:gtJsonObjResponse()
     Else
-        ::jResponse := utils.rest.u_setError( oData:getCode(), oData:getMessage())
+        ::jResponse := utils.rest.u_setError(oData:getCode(), oData:getMessage())
     EndIf
 
-Return ::jResponse 
+Return ::jResponse
 
 
 
@@ -80,19 +80,19 @@ Return ::jResponse
     @param  cId, character, ID do Registro
     @return ::jResponse, json, JSon de Retorno
     /*/
-Method handle( nOperation as Numeric, jBody as Json, cId as character ) as Json Class OwnersService
-    
+Method handle(nOperation as Numeric, jBody as Json, cId as character) as Json Class OwnersService
+
     Local oData as Object
 
     Default nOperation := 0
     Default jBody := JsonObject():new()
     Default cId := ""
 
-    oData := OwnersData():new( If( nOperation == 3, "POST", If( nOperation == 4, "PUT", "DELETE" )))
-    ::jResponse := oData:handleOwners( nOperation, jBody, cId )
+    oData := OwnersData():new(If(nOperation == 3, "POST", If(nOperation == 4, "PUT", "DELETE")))
+    ::jResponse := oData:handleOwners(nOperation, jBody, cId)
 
-    If ( ! oData:lOk )
-        ::jResponse := utils.rest.u_setError( oData:getCode(), oData:getMessage())
+    If (! oData:lOk)
+        ::jResponse := utils.rest.u_setError(oData:getCode(), oData:getMessage())
     EndIf
-    
+
 Return ::jResponse
