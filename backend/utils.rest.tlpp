@@ -60,7 +60,7 @@ Return jResponse
     @return aData, array , Lista
 /*/
 User Function buildData(jBody as Json, oResource as object ) as Array
-    
+
     Local aData   as Array
     Local aFields as Array
     Local cField  as Character
@@ -99,13 +99,13 @@ User Function getErrorMessage( oModel as Object )
     Local nError as Numeric
 
     aError := oModel:getErrorMessage()
-    
-    For nError := 1 To len( aMsgError )
-        If ( valType( aMsgError[ nError ]) == "C" )
-            cError += strTran( strTran( aMsgError[ nError ], "<", "" ), "-", "" ) + (" ")
+
+    For nError := 1 To len( aError )
+        If ( valType( aError[ nError ]) == "C" )
+            cError += strTran( strTran( aError[ nError ], "<", "" ), "-", "" ) + (" ")
         EndIf
     Next
-    
+
 Return cError
 
 

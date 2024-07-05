@@ -9,7 +9,7 @@ namespace Pets
     @version 1.0
     /*/
 Class PetsController
-    
+
     Data jResponse as Json
     Data oService  as Object
 
@@ -29,7 +29,7 @@ Class PetsController
 
     @Delete( '/api/v1/pets/:id' )
     Public Method delete() as Logical
-	
+
 EndClass
 
 
@@ -41,10 +41,10 @@ EndClass
     @return self, object, instância da classe
     /*/
 Method new() as Object Class PetsController
-    
+
     ::oService := PetsService():new()
     ::jResponse := JsonObject():new()
-    
+
 Return self
 
 
@@ -90,7 +90,7 @@ Return .T.
 	@return .T., logical, Verdadeiro
 	/*/
 Method getById() as Logical Class PetsController
-	
+
 	Local cId       as Character
     Local aFilter   as Array
     Local cFields   as Character
@@ -108,7 +108,7 @@ Method getById() as Logical Class PetsController
 
 	cId := oRest:getPathParamsRequest()['id']
 
-    ::jResponse := ::oService:get( nPage, nPageSize, aFilter, cFields, cSort, cId )	
+    ::jResponse := ::oService:get( nPage, nPageSize, aFilter, cFields, cSort, cId )
 
 	utils.rest.u_setResponse( ::jResponse )
 
@@ -125,7 +125,7 @@ Return .T.
 	@version 1.0
 	/*/
 Method post() as Logical Class PetsController
-	
+
 	Local cBody as Character
 	Local jBody as Json
 
@@ -151,7 +151,7 @@ Return .T.
 	@version 1.0
 	/*/
 Method put() as Logical Class PetsController
-	
+
 	Local cId   as character
 	Local cBody as Character
 	Local jBody as Json
@@ -179,7 +179,7 @@ Return .T.
 	@version 1.0
 	/*/
 Method delete() as Logical Class PetsController
-	
+
 	Local cId   as character
 
 	cId   := oRest:getPathParamsRequest()['id']
@@ -205,7 +205,7 @@ Return .T.
     @param cSort, character, Ordenação dos campos
 /*/
 Static Function getQueryParam( nPage as Numeric, nPageSize as Numeric, aFilter as Array, cFields as Character, cSort as Character )
-    
+
 	If ( oRest:getQueryRequest():getJsonText( 'page' ) != 'null' )
 		nPage := val( oRest:getQueryRequest():getJsonText( 'page' ))
 	EndIf
@@ -220,6 +220,10 @@ Static Function getQueryParam( nPage as Numeric, nPageSize as Numeric, aFilter a
 
 	If ( oRest:getQueryRequest():getJsonText( 'sort' ) != 'null' )
 		cSort := oRest:getQueryRequest():getJsonText( 'sort' )
+	EndIf
+
+	If (oRest:getQueryRequest():getJsonText('filter') != 'null')
+		aAdd(aFilter, { 'FILTER', oRest:getQueryRequest():getJsonText('filter')})
 	EndIf
 
 	If ( oRest:getQueryRequest():getJsonText( 'name' ) != 'null' )
@@ -242,8 +246,8 @@ Static Function getQueryParam( nPage as Numeric, nPageSize as Numeric, aFilter a
 		aAdd( aFilter, { 'specie', oRest:getQueryRequest():getJsonText( 'specie' )})
 	EndIf
 
-	If ( oRest:getQueryRequest():getJsonText( 'ownerid' ) != 'null' )
-		aAdd( aFilter, { 'ownerid', oRest:getQueryRequest():getJsonText( 'ownerid' )})
+	If ( oRest:getQueryRequest():getJsonText( 'ownerId' ) != 'null' )
+		aAdd( aFilter, { 'ownerId', oRest:getQueryRequest():getJsonText( 'ownerId' )})
 	EndIf
 
 Return Nil

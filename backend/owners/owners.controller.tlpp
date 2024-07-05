@@ -21,8 +21,8 @@ Class OwnersController
     @Get('/api/v1/owners/:id')
     Public Method getById() as Logical
 
-	@Post('/api/v1/owners')
-	Public Method post() as Logical
+    @Post('/api/v1/owners')
+    Public Method post() as Logical
 
     @Put('/api/v1/owners/:id')
     Public Method put() as Logical
@@ -220,6 +220,10 @@ Static Function getQueryParam(nPage as Numeric, nPageSize as Numeric, aFilter as
 
 	If (oRest:getQueryRequest():getJsonText('sort') != 'null')
 		cSort := oRest:getQueryRequest():getJsonText('sort')
+	EndIf
+
+	If (oRest:getQueryRequest():getJsonText('filter') != 'null')
+		aAdd(aFilter, { 'FILTER', oRest:getQueryRequest():getJsonText('filter')})
 	EndIf
 
 	If (oRest:getQueryRequest():getJsonText('name') != 'null')
