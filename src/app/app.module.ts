@@ -7,6 +7,7 @@ import { PoModule } from '@po-ui/ng-components';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { HomeComponent } from './features/home/home.component';
+import { ToolbarModule } from './core/toolbar/toolbar.module';
 import { PoTemplatesModule } from '@po-ui/ng-templates';
 
 @NgModule({
@@ -20,7 +21,8 @@ import { PoTemplatesModule } from '@po-ui/ng-templates';
     PoModule,
     HttpClientModule,
     RouterModule.forRoot([]),
-    PoTemplatesModule
+    PoTemplatesModule,
+    ToolbarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

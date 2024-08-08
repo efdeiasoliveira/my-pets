@@ -15,14 +15,11 @@ export class AppComponent {
   }
 
   readonly menus: Array<PoMenuItem> = [
-    { label: 'Home', action: () => this.router.navigate(['']) },
-    { label: 'Tutores', action: () => this.router.navigate(['owners'])},
-    { label: 'Pets' },
-    { label: 'Sair' }
+    { label: 'Home', action: () => this.router.navigate(['']), shortLabel: 'Home', icon: 'po-icon-home' },
+    { label: 'Tutores', action: () => this.router.navigate(['owners']), shortLabel: 'Home', icon: 'po-icon-home' },
+    { label: 'Pets', shortLabel: 'Home', icon: 'po-icon-home'  },
+    { label: 'Sair', shortLabel: 'Home', icon: 'po-icon-home'  }
   ];
 
-  private onClick() {
-    alert('Clicked in menu item')
-  }
 
 }
